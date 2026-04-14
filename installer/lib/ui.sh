@@ -1,0 +1,164 @@
+#!/usr/bin/env bash
+# UI functions — gum wrappers with automatic fallback to basic prompts
+
+GUM_ACCENT="#00BFFF"
+GUM_SELECTED="#00FF88"
+
+# ── Smart wrappers that auto-detect gum vs fallback ──
+
+ui_choose() {
+  local header="$1"
+  shift
+  if [[ "$USE_FALLBACK" == "true" ]]; then
+    _fallback_choose "$header" "$@"
+  else
+    gum choose --header="$header" \
+      --header.foreground="$GUM_ACCENT" \
+      --cursor.foreground="$GUM_SELECTED" \
+      --selected.foreground="$GUM_SELECTED" \
+      "$@"
+  fi
+}
+
+ui_choose_multi() {
+  local header="$1"
+  shift
+  if [[ "$USE_FALLBACK" == "true" ]]; then
+    _fallback_choose_multi "$header" "$@"
+  else
+    gum choose --no-limit \
+      --header="$header" \
+      --header.foreground="$GUM_ACCENT" \
+      --cursor.foreground="$GUM_SELECTED" \
+      --selected.foreground="$GUM_SELECTED" \
+      "$@"
+  fi
+}
+
+ui_confirm() {
+  local prompt="$1"
+  if [[ "$USE_FALLBACK" == "true" ]]; then
+    _fallback_confirm "$prompt"
+  else
+    gum confirm "$prompt" \
+      --affirmative="Yes" \
+      --negative="No" \
+      --prompt.foreground="$GUM_ACCENT"
+  fi
+}
+
+ui_input() {
+  local placeholder="$1"
+  local header="${2:-}"
+  if [[ "$USE_FALLBACK" == "true" ]]; then
+    _fallback_input "$placeholder" "$header"
+  else
+    if [[ -n "$header" ]]; then
+      gum input --placeholder="$placeholder" \
+        --header="$header" \
+        --header.foreground="$GUM_ACCENT" \
+        --cursor.foreground="$GUM_SELECTED"
+    else
+      gum input --placeholder="$placeholder" \
+        --cursor.foreground="$GUM_SELECTED"
+    fi
+  fi
+}
+
+ui_spin() {
+  local title="$1"
+  shift
+  if [[ "$USE_FALLBACK" == "true" ]]; then
+    echo -e "  ${ARROW} ${title}"
+    "$@"
+  else
+    gum spin --spinner dot \
+      --title="$title" \
+      --spinner.foreground="$GUM_ACCENT" \
+      -- "$@"
+  fi
+}
+
+ui_style_box() {
+  local text="$1"
+  if [[ "$USE_FALLBACK" == "true" ]]; then
+    echo ""
+    echo "  $text"
+    echo ""
+  else
+    gum style \
+      --border="rounded" \
+      --border-foreground="$GUM_ACCENT" \
+      --padding="0 2" \
+      --margin="0 0" \
+      "$text"
+  fi
+}
+
+# ── Fallback functions (basic terminal prompts, no gum) ──
+
+_fallback_confirm() {
+  local prompt="$1"
+  echo -e -n "  ${CYAN}${prompt}${RESET} [Y/n] "
+  read -r answer
+  [[ -z "$answer" || "$answer" =~ ^[Yy] ]]
+}
+
+_fallback_choose() {
+  local header="$1"
+  shift
+  local options=("$@")
+  echo ""
+  echo -e "  ${CYAN}${header}${RESET}"
+  local i=1
+  for opt in "${options[@]}"; do
+    echo -e "    ${WHITE}${i})${RESET} ${opt}"
+    ((i++))
+  done
+  echo -n "  Enter number: "
+  read -r choice
+  if [[ "$choice" =~ ^[0-9]+$ ]] && [[ "$choice" -ge 1 ]] && [[ "$choice" -le ${#options[@]} ]]; then
+    echo "${options[$((choice-1))]}"
+  else
+    echo "${options[0]}"
+  fi
+}
+
+_fallback_choose_multi() {
+  local header="$1"
+  shift
+  local options=("$@")
+  echo ""
+  echo -e "  ${CYAN}${header}${RESET}"
+  echo -e "  ${DIM}Enter numbers separated by spaces (e.g., 1 3 5), or 'a' for all${RESET}"
+  local i=1
+  for opt in "${options[@]}"; do
+    echo -e "    ${WHITE}${i})${RESET} ${opt}"
+    ((i++))
+  done
+  echo -n "  Selection: "
+  read -r choices
+
+  if [[ "$choices" == "a" || "$choices" == "A" ]]; then
+    printf '%s\n' "${options[@]}"
+    return
+  fi
+
+  for num in $choices; do
+    if [[ "$num" =~ ^[0-9]+$ ]] && [[ "$num" -ge 1 ]] && [[ "$num" -le ${#options[@]} ]]; then
+      echo "${options[$((num-1))]}"
+    fi
+  done
+}
+
+_fallback_input() {
+  local placeholder="$1"
+  local header="${2:-}"
+  if [[ -n "$header" ]]; then
+    echo -e -n "  ${CYAN}${header}${RESET} [${DIM}${placeholder}${RESET}]: "
+  else
+    echo -e -n "  Input [${DIM}${placeholder}${RESET}]: "
+  fi
+  read -r value
+  echo "$value"
+}
