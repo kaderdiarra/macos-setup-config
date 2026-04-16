@@ -249,7 +249,7 @@ select_apps() {
   done
 
   local selected
-  selected=$(ui_choose_multi "Select apps to install:" "${options[@]}")
+  selected=$(ui_choose_multi "Select apps to install (tip: 'make info <app>' for details):" "${options[@]}")
 
   SELECTED_APPS=()
   while IFS= read -r line; do
@@ -283,7 +283,7 @@ select_devtools() {
   done
 
   local selected
-  selected=$(ui_choose_multi "Select dev tools to install:" "${options[@]}")
+  selected=$(ui_choose_multi "Select dev tools (tip: 'make info <tool>' for details):" "${options[@]}")
 
   SELECTED_DEVTOOLS=()
   while IFS= read -r line; do
@@ -342,7 +342,7 @@ select_extensions() {
   done
 
   local selected
-  selected=$(ui_choose_multi "Select VS Code extensions:" "${options[@]}")
+  selected=$(ui_choose_multi "Select VS Code extensions (tip: 'make info <ext>' for details):" "${options[@]}")
 
   SELECTED_EXTENSIONS=()
   while IFS= read -r line; do

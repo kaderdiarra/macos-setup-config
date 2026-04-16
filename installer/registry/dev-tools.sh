@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
-# Dev tools registry — pipe-delimited: "key|Display Name|install_method|check_type|check_value|description"
+# Dev tools registry — pipe-delimited: "key|Display Name|install_method|check_type|check_value|description|url"
 
 DEVTOOL_ENTRIES=(
-  "git|Git|brew:git|command|git|Distributed version control"
-  "wget|wget|brew:wget|command|wget|Download files from the web"
-  "telnet|telnet|brew:telnet|command|telnet|Network debugging tool"
-  "tldr|tldr|brew:tldr|command|tldr|Simplified man pages"
-  "fira-code|Fira Code|cask:font-fira-code|cask|font-fira-code|Developer font with ligatures"
-  "nvm|NVM|custom:install_nvm|directory|$HOME/.nvm|Node.js version manager"
-  "oh-my-zsh|Oh My Zsh|custom:install_oh_my_zsh|directory|$HOME/.oh-my-zsh|Zsh framework with themes and plugins"
+  "git|Git|brew:git|command|git|Distributed version control|https://git-scm.com"
+  "wget|wget|brew:wget|command|wget|Download files from the web|https://www.gnu.org/software/wget"
+  "telnet|telnet|brew:telnet|command|telnet|Network debugging tool|"
+  "tldr|tldr|brew:tldr|command|tldr|Simplified man pages|https://tldr.sh"
+  "fira-code|Fira Code|cask:font-fira-code|cask|font-fira-code|Developer font with ligatures|https://github.com/tonsky/FiraCode"
+  "nvm|NVM|custom:install_nvm|directory|$HOME/.nvm|Node.js version manager|https://github.com/nvm-sh/nvm"
+  "oh-my-zsh|Oh My Zsh|custom:install_oh_my_zsh|directory|$HOME/.oh-my-zsh|Zsh framework with themes and plugins|https://ohmyz.sh"
 )
 
 # NVM version — override with NVM_INSTALL_VERSION env var

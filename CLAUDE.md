@@ -24,6 +24,7 @@ installer/         → Interactive CLI installer
   phases/          → Installation phases (prerequisites → select → resolve → install → configure)
   bundles.sh       → Predefined setup bundles (minimal, web-dev, full)
   verify.sh        → Standalone status checker for all registered tools
+  info.sh          → Tool info browser (make info / make info t=<tool>)
 ```
 
 ## Commands
@@ -33,6 +34,8 @@ make install           # Run interactive installer
 make install-dry       # Preview mode (no changes, shows exact commands)
 make install-verbose   # Run with full command output visible
 make verify            # Check install status of all tools and apps
+make info              # Browse all tools with status
+make info raycast    # Get details on a specific tool
 make logs              # Show most recent install log
 make help              # Show available commands
 ```
@@ -49,7 +52,7 @@ make help              # Show available commands
 ### Installer
 - **Bash 3.2 compatible** — no `declare -A`, no associative arrays (macOS ships Bash 3.2)
 - Registry pattern: adding a new tool = adding one entry to the appropriate registry file in `installer/registry/`
-- Registry entries use pipe-delimited strings in indexed arrays with `get_field()` accessor
+- Registry entries use pipe-delimited strings in indexed arrays with `get_field()` accessor — apps/devtools have 7 fields (last is URL), extensions have 6 fields (last is URL)
 - Uses `gum` for interactive UI with automatic fallback to basic terminal prompts
 - Phase-based execution: prerequisites → selection → dependency resolution → install → configure
 - Idempotent: checks current state before acting, safe to re-run

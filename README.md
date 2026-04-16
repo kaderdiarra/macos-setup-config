@@ -58,6 +58,8 @@ make install           # Run the interactive installer
 make install-dry       # Preview what would be installed (no changes)
 make install-verbose   # Run installer with full command output
 make verify            # Check current install status of all tools and apps
+make info              # Browse all available tools with install status
+make info raycast    # Get details on a specific tool (name, URL, status)
 make update            # Pull latest config and re-run installer
 make logs              # Show the most recent install log
 make help              # Show all available commands
